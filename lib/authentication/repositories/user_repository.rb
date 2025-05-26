@@ -6,16 +6,26 @@ require_relative '../models/user_model'
 class UserRepository
   attr_reader :users
 
-  def initialize
+  def initialize(users_text_repository)
     @users = []
+    @users_text_repository = users_text_repository
+    data = @users_text_repository.read
+
+    data.each_line do |line|
+      user_info = line.split(' ')
+      @users << User.new(user_info[0], user_info[1])
+    end
   end
 
   def create?(username, password)
-    users.find { |user| user.username == username }
-    return false unless users.empty?
+    users.each do |user|
+      return false if user.username == username
+    end
 
-    existing_user = User.new(username, password)
-    @users << existing_user
+
+    @users << User.new(username, password)
+    @users_text_repository.write("#{username} #{password}")
+    true
   end
 
   def login(username, password)
