@@ -40,39 +40,51 @@ class OnlineLibraryRunner
     puts @user.inspect
 
     loop do
-      puts '================================================================='
-      puts 'Welcome to the Online Library App! These are the possible actions'
-      puts '(1) - list all the available books'
-      puts '(2) - borrow one book from the list by its id'
-      puts '(3) - return a borrowed book'
-      puts '(4) - exit the application'
-
-      action = gets.chomp
-      puts '================================================================='
-
-      case action
-      when '1'
-        @list_available_books_service.execute
-      when '2'
-        puts 'which book do you want to borrow?'
-        book_id = gets.chomp
-
-        result = @borrow_a_book_service.execute(book_id, @user.username)
-        puts 'this book cannot be borrowed because it is already borrowed' unless result
-        puts 'echhh... take it *reluctantly gives you the book*' if result
-      when '3'
-        puts 'which book do you want to return?'
-        book_id = gets.chomp
-
-        result = @return_a_book_service.execute(book_id, @user.username)
-        puts 'this book cannot be returned by you or it is not borrowed yet' unless result
-        puts 'finally! been waiting for this one' if result
-      when '4'
-        break
-      else
-        'wrong input'
-      end
+      action = get_user_library_action
+      break unless start_library_action(action)
     end
+  end
+
+  def get_user_library_action
+    puts '================================================================='
+    puts 'Welcome to the Online Library App! These are the possible actions'
+    puts '(1) - list all the available books'
+    puts '(2) - borrow one book from the list by its id'
+    puts '(3) - return a borrowed book'
+    puts '(4) - exit the application'
+
+    action = gets.chomp
+    puts '================================================================='
+    action
+  end
+
+  def start_library_action(action)
+    result = ''
+
+    case action
+    when '1'
+      @list_available_books_service.execute
+    when '2'
+      puts 'which book do you want to borrow?'
+      book_id = gets.chomp
+
+      result = @borrow_a_book_service.execute(book_id, @user.username)
+      puts 'this book cannot be borrowed because it is already borrowed' unless result
+      puts 'echhh... take it *reluctantly gives you the book*' if result
+    when '3'
+      puts 'which book do you want to return?'
+      book_id = gets.chomp
+
+      result = @return_a_book_service.execute(book_id, @user.username)
+      puts 'this book cannot be returned by you or it is not borrowed yet' unless result
+      puts 'finally! been waiting for this one' if result
+    when '4'
+      result = false
+    else
+      result = 'wrong input'
+    end
+
+    result
   end
 end
 

@@ -2,6 +2,7 @@
 
 require_relative '../../common/use_case_module'
 
+# Borrow a book service handles logic behind borrowing a book
 class BorrowABookService
   include UseCaseModule
 

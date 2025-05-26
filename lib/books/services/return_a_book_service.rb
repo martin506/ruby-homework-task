@@ -2,7 +2,7 @@
 
 require_relative '../repositories/book_repository'
 
-#Return a book service handles the logic behind
+# Return a book service handles the logic behind
 class ReturnABookService
   include UseCaseModule
 
