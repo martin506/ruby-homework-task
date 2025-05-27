@@ -1,0 +1,2 @@
+class UserAlreadyExistsError < StandardError
+end

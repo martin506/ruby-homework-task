@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=sqlite3::memory:
+    depends_on:
+      - db
+    command: ["ruby", "main.rb"]

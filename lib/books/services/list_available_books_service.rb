@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require_relative '../../common/use_case_module'
+require_relative '../../common/use_case'
 
 
 # List Available Books Service lists all the books which are not borrowed
 class ListAvailableBooksService
-  include UseCaseModule
+  include UseCase
 
   def initialize(book_repository)
     @book_repository = book_repository

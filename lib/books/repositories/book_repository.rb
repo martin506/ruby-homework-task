@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative '../../common/text_repository'
+require_relative '../../common/errors/book_is_borrowed_error'
+require_relative '../../common/errors/not_your_book_error'
 
 # Book Repository does memory operations related to books
 class BookRepository
@@ -28,7 +30,7 @@ class BookRepository
   end
 
   def take_book(id, username)
-    return false if borrowed?(id)
+    raise BookIsBorrowedError, 'Book is already borrowed' if borrowed?(id)
 
     @borrowed_books << [id, username]
 
@@ -38,7 +40,7 @@ class BookRepository
   end
 
   def return_book(id, username)
-    return false unless borrowed?(id)
+    raise BookIsBorrowedError, 'the book should first be borrowed if you want to return it' unless borrowed?(id)
 
     result = @borrowed_books.delete([id, username])
 
@@ -46,7 +48,7 @@ class BookRepository
       handle_delete_from_file
       result
     else
-      false
+      raise NotYourBookError, 'You have not borrowed this book yet'
     end
   end
 

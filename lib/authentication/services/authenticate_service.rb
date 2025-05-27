@@ -2,10 +2,9 @@
 
 # Authentication Service handles the functions related to authentication
 class AuthenticateService
-  include UseCaseModule
-  def initialize(login_service, register_service)
-    @login_service = login_service
-    @register_service = register_service
+  include UseCase
+  def initialize(user_repository)
+    @user_repository = user_repository
   end
 
   def execute
@@ -37,16 +36,35 @@ class AuthenticateService
     user = false
     case auth_choice
     when '1'
-      user = @login_service.execute(username, password)
+      user = login(username, password)
       if user
         @is_logged_in = true
         user
       end
     when '2'
-      return_value = @register_service.execute(username, password)
-      puts 'user already exists' unless return_value
+      register(username, password)
+      user = false
     else
       puts 'wrong input'
+    end
+  end
+
+  def login(username, password)
+    begin
+      existing_user = @user_repository.find_by_username(username)
+      existing_user if existing_user.password == password
+
+    rescue UserNotFoundError => ex
+      puts ex.message
+    end
+  end
+
+  def register(username, password)
+    begin
+      @user_repository.create!(username, password)
+
+    rescue UserAlreadyExistsError => ex
+      puts ex.message
     end
   end
 end

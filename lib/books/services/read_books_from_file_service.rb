@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'csv'
-require_relative '../../common/use_case_module'
-require_relative '../models/book_model'
+require_relative '../../common/use_case'
+require_relative '../models/book'
 
 # ReadBooksFromFileService reads data from csv file
 class ReadBooksFromFileService
-  include(UseCaseModule)
+  include(UseCase)
   def initialize(books_repository)
     @books_repository = books_repository
   end
