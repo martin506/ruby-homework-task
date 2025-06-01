@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../models/user'
+require_relative '../models/user_model'
 require_relative '../../common/errors/user_already_exists_error'
 require_relative '../../common/errors/user_not_found_error'
 
@@ -38,7 +38,7 @@ class UserRepository
 
     data.each_line do |line|
       user_info = line.split(' ')
-      @users << User.new(user_info[0], user_info[1])
+      @users << UserModel.new(user_info[0], user_info[1])
     end
   end
 end
