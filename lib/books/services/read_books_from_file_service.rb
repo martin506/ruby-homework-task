@@ -14,8 +14,7 @@ class ReadBooksFromFileService
   def execute
     CSV.foreach('./data/books.csv') do |row|
       if row[0] != 'Book ID'
-        book = Book.new(row[1], row[2], row[3])
-        @books_repository.save(row[0], book)
+        @books_repository.save({ id: row[0], title: row[1], author: row[2], year: row[3] })
       end
     end
   end
