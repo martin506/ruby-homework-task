@@ -4,6 +4,7 @@ require_relative './books/repositories/book_repository'
 require_relative './books/services/read_books_from_file_service'
 require_relative './authentication/repositories/user_repository'
 require_relative './common/text_repository'
+require_relative './books/repositories/taken_book_repository'
 require_relative './authentication/services/authenticate_service'
 
 require_relative './books/services/list_available_books_service'
@@ -21,15 +22,16 @@ class OnlineLibraryRunner
     @user_text_repository = TextRepository.new(USERS_TEXT_URL)
     @book_text_repository = TextRepository.new(TAKEN_BOOKS_TEXT_URL)
 
-    @book_repository = BookRepository.new(@book_text_repository)
-    @user_repository = UserRepository.new(@user_text_repository)
+    @book_repository = BookRepository.new
+    @user_repository = UserRepository.new
+    @taken_book_repository = TakenBookRepository.new(@book_repository, @user_repository)
 
     @read_books_from_file_service = ReadBooksFromFileService.new(@book_repository)
     @authentication_service = AuthenticateService.new(@user_repository)
 
-    @list_available_books_service = ListAvailableBooksService.new(@book_repository)
-    @borrow_a_book_service = BorrowABookService.new(@book_repository)
-    @return_a_book_service = ReturnABookService.new(@book_repository)
+    @list_available_books_service = ListAvailableBooksService.new(@book_repository, @taken_book_repository)
+    @borrow_a_book_service = BorrowABookService.new(@taken_book_repository)
+    @return_a_book_service = ReturnABookService.new(@taken_book_repository)
   end
 
   def run
@@ -66,14 +68,14 @@ class OnlineLibraryRunner
       puts 'which book do you want to borrow?'
       book_id = gets.chomp
 
-      result = @borrow_a_book_service.execute(book_id, @user.username)
+      result = @borrow_a_book_service.execute(book_id, @user[:name])
       puts 'echhh... take it *reluctantly gives you the book*' if result
       result = true
     when '3'
       puts 'which book do you want to return?'
       book_id = gets.chomp
 
-      result = @return_a_book_service.execute(book_id, @user.username)
+      result = @return_a_book_service.execute(book_id, @user[:name])
       puts 'finally! been waiting for this one' if result
       result = true
     when '4'

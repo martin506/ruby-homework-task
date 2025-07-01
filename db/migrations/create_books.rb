@@ -1,9 +1,10 @@
 require 'active_record'
+require_relative '../../db_setup'
 
-class CreateBook < ActiveRecord::Migration[7.1]
+class CreateBooks < ActiveRecord::Migration[7.1]
   def change
-    create_table :books, if: false do |t|
-      t.primary_key :id, :integer
+    create_table :books, if_not_exists: true, id: false do |t|
+      t.primary_key :id
       t.string :name
       t.string :author
       t.numeric :year

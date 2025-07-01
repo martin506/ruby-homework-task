@@ -10,18 +10,16 @@ class BookRepository
 
   def save(book)
     new_book = Book.new
-    new_book.id = book.id
-    new_book.name = book.title
-    new_book.author = book.author
-    new_book.year =  book.year
+    new_book.id = book[:id]
+    new_book.name = book[:name]
+    new_book.author = book[:author]
+    new_book.year =  book[:year]
 
-    Book.save(new_book)
+    new_book.save
   end
 
   def find_by_id(id)
-    book = Book.where({ id: id })
-    raise BookNotFoundError unless book
-    book
+    Book.find(id)
   end
 
   def find_all

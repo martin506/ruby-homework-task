@@ -3,4 +3,10 @@ require_relative './migrations/create_users'
 require_relative './migrations/create_books'
 require_relative './migrations/create_taken_books'
 
-CreateUsers.new.change
+class MigrationsRunner
+  def run
+    CreateUsers.new.change
+    CreateBooks.new.change
+    CreateTakenBooks.new.change
+  end
+end

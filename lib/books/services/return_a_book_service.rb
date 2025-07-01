@@ -8,13 +8,13 @@ require_relative '../../common/errors/not_your_book_error'
 class ReturnABookService
   include UseCase
 
-  def initialize(taken_book_repository, book_repository)
+  def initialize(taken_book_repository)
     @taken_book_repository = taken_book_repository
   end
 
-  def execute(book_id, username)
+  def execute(book_id, name)
     begin
-      taken_book = @taken_book_repository.find_last_by_username_and_book_id(username, book_id)
+      taken_book = @taken_book_repository.find_last_by_name_and_book_id(name, book_id)
 
       raise NotYourBookError unless taken_book
 

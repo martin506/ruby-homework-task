@@ -17,18 +17,24 @@ class ListAvailableBooksService
 
   def execute
     @books = @book_repository.find_all
-    taken_books = @taken_book_repository.find_all
 
-    books.each do |book|
-      puts `#{book.id} #{book.name} #{book.author} #{book.year}`
+    @books.each do |book|
+      taken_book = @taken_book_repository.find_last_by_book_id(book.id)
+
+      puts format(
+        "ID: %-5d Name: %-40s Author: %-30s Year: %-4d",
+        book.id, book.name, book.author, book.year
+      ) unless book_unavailable?(taken_book)
     end
   end
 
   private
 
-  def check_availability(book)
-    @taken_books.each do |taken_book|
-      return false if taken_book.book == book
-    end
+  def book_unavailable?(taken_book)
+    return false if taken_book.nil?
+
+    return true if taken_book.returned_at.nil?
+
+    false
   end
 end

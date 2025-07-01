@@ -7,17 +7,19 @@ require_relative '../../common/errors/book_is_borrowed_error'
 class BorrowABookService
   include UseCase
 
-  def initialize(taken_book_repository, book_repository)
+  def initialize(taken_book_repository)
     @taken_book_repository = taken_book_repository
   end
 
-  def execute(book_id, username)
+  def execute(book_id, name)
     begin
-      taken_book = @taken_book_repository.find_last_by_username_and_book_id(username, book_id)
+      taken_book = @taken_book_repository.find_last_by_name_and_book_id(name, book_id)
 
-      raise BookIsBorrowedError  if taken_book.returned_at == nil
+      return @taken_book_repository.save_new_taken_book(name, book_id) if taken_book.nil?
 
-      @taken_book_repository.save_new_taken_book(username, book_id)
+      raise BookIsBorrowedError if taken_book.returned_at.nil?
+
+      @taken_book_repository.save_new_taken_book(name, book_id)
     rescue BookIsBorrowedError => ex
       puts ex.message
     end
