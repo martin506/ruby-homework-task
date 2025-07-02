@@ -13,14 +13,14 @@ class ReturnABookService
   end
 
   def execute(book_id, name)
-    begin
-      taken_book = @taken_book_repository.find_last_by_name_and_book_id(name, book_id)
+    taken_book = @taken_book_repository.find_last_by_name_and_book_id(name, book_id)
 
-      raise NotYourBookError unless taken_book
+    raise NotYourBookError unless taken_book
 
-      @taken_book_repository.update_returned_at(taken_book)
-    rescue NotYourBookError => ex
-      puts ex.message
-    end
+    raise NotYourBookError unless taken_book.returned_at.nil?
+
+    @taken_book_repository.update_returned_at(taken_book)
+  rescue NotYourBookError => ex
+    puts ex.message
   end
 end

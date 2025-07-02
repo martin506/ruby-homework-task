@@ -21,15 +21,13 @@ class TakenBookRepository
   end
 
   def save_new_taken_book(name, book_id)
-    user =  @user_repository.find_by_name(name)
+    user = @user_repository.find_by_name(name)
     book = @book_repository.find_by_id(book_id)
 
     TakenBook.create({ book: book, user: user,  taken_at: DateTime.now })
   end
 
   def update_returned_at(taken_book)
-    puts taken_book.inspect
-    puts DateTime.now
     taken_book.update(returned_at: DateTime.now)
   end
 

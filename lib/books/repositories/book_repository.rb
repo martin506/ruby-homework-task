@@ -9,13 +9,7 @@ class BookRepository
   attr_reader :books
 
   def save(book)
-    new_book = Book.new
-    new_book.id = book[:id]
-    new_book.name = book[:name]
-    new_book.author = book[:author]
-    new_book.year =  book[:year]
-
-    new_book.save
+    Book.create({ id: book[:id], name: book[:name], author: book[:author], year: book[:year] })
   end
 
   def find_by_id(id)

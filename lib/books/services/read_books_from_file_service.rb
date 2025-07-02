@@ -6,6 +6,7 @@ require_relative '../../common/use_case'
 # ReadBooksFromFileService reads data from csv file
 class ReadBooksFromFileService
   include(UseCase)
+
   def initialize(books_repository)
     @books_repository = books_repository
   end

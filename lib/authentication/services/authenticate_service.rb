@@ -5,6 +5,7 @@ require_relative '../../common/errors/user_not_found_error'
 # Authentication Service handles the functions related to authentication
 class AuthenticateService
   include UseCase
+
   def initialize(user_repository)
     @user_repository = user_repository
   end
@@ -22,10 +23,13 @@ class AuthenticateService
 
   def authenticate_input
     puts '================================================================='
+
     puts 'do you want to login or to register: (1) - login,  (2) - register'
     auth_choice = gets.chomp
+
     puts 'please write your name'
     name = gets.chomp
+
     puts 'please write your password'
     password = gets.chomp
 
@@ -35,7 +39,6 @@ class AuthenticateService
   end
 
   def authenticate_execute_logic(auth_choice, name,  password)
-    user = false
     case auth_choice
     when '1'
       user = login(name, password)
@@ -45,29 +48,25 @@ class AuthenticateService
       end
     when '2'
       register(name, password)
-      user = false
+      false
     else
       puts 'wrong input'
     end
   end
 
   def login(name, password)
-    begin
-      existing_user = @user_repository.find_by_name(name)
-      puts existing_user.inspect
+    existing_user = @user_repository.find_by_name(name)
+    puts existing_user.inspect
 
-      existing_user if existing_user && existing_user.password == password
-    rescue UserNotFoundError => ex
-      puts ex.message
-    end
+    existing_user if existing_user && existing_user.password == password
+  rescue UserNotFoundError => ex
+    puts ex.message
   end
 
-  def register(name, password)
-    begin
-      @user_repository.create!(name, password)
+  def register(name, password )
+    @user_repository.create!(name, password)
 
-    rescue UserAlreadyExistsError => ex
-      puts ex.message
-    end
+  rescue UserAlreadyExistsError => ex
+    puts ex.message
   end
 end
