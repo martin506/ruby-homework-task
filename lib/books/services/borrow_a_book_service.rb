@@ -12,16 +12,14 @@ class BorrowABookService
   end
 
   def execute(book_id, name)
-    begin
-      taken_book = @taken_book_repository.find_last_by_book_id(book_id)
+    taken_book = @taken_book_repository.find_last_by_book_id(book_id)
 
-      return @taken_book_repository.save_new_taken_book(name, book_id) if taken_book.nil?
+    return @taken_book_repository.save_new_taken_book(name, book_id) if taken_book.nil?
 
-      raise BookIsBorrowedError if taken_book.returned_at.nil?
+    raise BookIsBorrowedError if taken_book.returned_at.nil?
 
-      @taken_book_repository.save_new_taken_book(name, book_id)
-    rescue BookIsBorrowedError => ex
-      puts ex.message
-    end
+    @taken_book_repository.save_new_taken_book(name, book_id)
+  rescue BookIsBorrowedError => ex
+    puts ex.message
   end
 end
