@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    command: bundle exec ruby main.rb
+    environment:
+      DATABASE_URL: sqlite3://db.sqlite
+    stdin_open: true
+    tty: true

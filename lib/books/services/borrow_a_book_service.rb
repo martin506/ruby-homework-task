@@ -1,16 +1,25 @@
 # frozen_string_literal: true
 
-require_relative '../../common/use_case_module'
+require_relative '../../common/use_case'
+require_relative '../../common/errors/book_is_borrowed_error'
 
 # Borrow a book service handles logic behind borrowing a book
 class BorrowABookService
-  include UseCaseModule
+  include UseCase
 
-  def initialize(book_repository)
-    @book_repository = book_repository
+  def initialize(taken_book_repository)
+    @taken_book_repository = taken_book_repository
   end
 
-  def execute(book_id, username)
-    @book_repository.take_book(book_id, username)
+  def execute(book_id, name)
+    taken_book = @taken_book_repository.find_last_by_book_id(book_id)
+
+    return @taken_book_repository.save_new_taken_book(name, book_id) if taken_book.nil?
+
+    raise BookIsBorrowedError if taken_book.returned_at.nil?
+
+    @taken_book_repository.save_new_taken_book(name, book_id)
+  rescue BookIsBorrowedError => ex
+    puts ex.message
   end
 end

@@ -1,0 +1,2 @@
+class NotYourBookError < StandardError
+end

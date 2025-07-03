@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'csv'
-require_relative '../../common/use_case_module'
-require_relative '../models/book_model'
+require_relative '../../common/use_case'
 
 # ReadBooksFromFileService reads data from csv file
 class ReadBooksFromFileService
-  include(UseCaseModule)
+  include(UseCase)
+
   def initialize(books_repository)
     @books_repository = books_repository
   end
@@ -14,8 +14,11 @@ class ReadBooksFromFileService
   def execute
     CSV.foreach('./data/books.csv') do |row|
       if row[0] != 'Book ID'
-        book = Book.new(row[1], row[2], row[3])
-        @books_repository.save(row[0], book)
+        begin
+          @books_repository.find_by_id(row[0])
+        rescue ActiveRecord::RecordNotFound
+          @books_repository.save({ id: row[0].to_i, name: row[1], author: row[2], year: row[3].to_i })
+        end
       end
     end
   end

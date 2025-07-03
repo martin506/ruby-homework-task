@@ -1,16 +1,26 @@
 # frozen_string_literal: true
 
 require_relative '../repositories/book_repository'
+require_relative '../../common/errors/book_is_borrowed_error'
+require_relative '../../common/errors/not_your_book_error'
 
 # Return a book service handles the logic behind
 class ReturnABookService
-  include UseCaseModule
+  include UseCase
 
-  def initialize(book_repository)
-    @book_repository = book_repository
+  def initialize(taken_book_repository)
+    @taken_book_repository = taken_book_repository
   end
 
-  def execute(book_id, username)
-    @book_repository.return_book(book_id, username)
+  def execute(book_id, name)
+    taken_book = @taken_book_repository.find_last_by_name_and_book_id(name, book_id)
+
+    raise NotYourBookError unless taken_book
+
+    raise NotYourBookError unless taken_book.returned_at.nil?
+
+    @taken_book_repository.update_returned_at(taken_book)
+  rescue NotYourBookError => ex
+    puts ex.message
   end
 end
