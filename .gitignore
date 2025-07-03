@@ -172,3 +172,15 @@ fabric.properties
 .idea/**/azureSettings.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/rubymine
+
+# Ignore IDE project files
+.idea/dataSources.xml
+.idea/ruby-homework-task.iml
+
+# Ignore SQLite database files
+db/development.sqlite3
+db/development.sqlite3-shm
+db/development.sqlite3-wal
+
+# Ignore macOS system files
+lib/books/.DS_Store
